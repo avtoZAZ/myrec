@@ -1,0 +1,27 @@
+{
+  "publish": false,
+  "recipes": [
+    {
+      "id": "avocado-toast-003",
+      "title": "Авокадо-тост с яйцом пашот",
+      "slug": "avocado-toast-s-yaytsom",
+      "description": "Полезный и быстрый завтрак с хрустящим хлебом.",
+      "coverImage": "https://images.unsplash.com/photo-1525351484163-7529414344d8",
+      "category": "Завтраки",
+      "difficulty": "easy",
+      "ingredients": [{ "name": "авокадо" }, { "name": "хлеб" }],
+      "steps": [{ "title": "Сборка", "description": "Соберите тост и подайте." }]
+    },
+    {
+      "id": "salmon-bowl-004",
+      "title": "Боул с лососем",
+      "slug": "salmon-bowl",
+      "description": "Легкий ужин с киноа, лососем и овощами.",
+      "coverImage": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd",
+      "category": "Боулы",
+      "difficulty": "medium",
+      "ingredients": [{ "name": "лосось" }, { "name": "киноа" }],
+      "steps": [{ "title": "Приготовление", "description": "Запеките лосось, соберите боул." }]
+    }
+  ]
+}
