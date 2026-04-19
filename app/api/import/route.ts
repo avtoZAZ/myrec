@@ -1,5 +1,6 @@
 import { validateImportPayload } from "@/lib/validators";
-import { readRecipes, writeRecipes } from "@/lib/store";
+import { prisma } from "@/lib/prisma";
+import { recipeDefaults } from "@/lib/recipe-defaults";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -22,15 +23,19 @@ export async function POST(request: Request) {
 
   const payload = validation.data as any;
   const items = Array.isArray(payload.recipes) ? payload.recipes : [payload];
-  const recipes = await readRecipes();
 
   for (const item of items) {
-    const published = forcePublish || payload.publish || item.publish || item.published || false;
-    const idx = recipes.findIndex((r) => r.id === item.id);
-    if (idx >= 0) recipes[idx] = { ...recipes[idx], ...item, published };
-    else recipes.unshift({ ...item, published });
+    const publishedFromInput = Boolean(payload.publish || item.publish || item.published);
+    const published = forcePublish || publishedFromInput;
+    // `publish` is an import helper flag and is not a Recipe model field.
+    const { publish: _publish, ...recipe } = item;
+    const data = { ...recipeDefaults, ...recipe, published };
+    await prisma.recipe.upsert({
+      where: { id: String(item.id) },
+      update: data,
+      create: data
+    });
   }
 
-  await writeRecipes(recipes);
   return NextResponse.redirect(new URL("/admin", request.url));
 }
