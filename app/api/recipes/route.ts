@@ -42,7 +42,7 @@ export async function GET(request: Request) {
   const action = searchParams.get("action");
 
   if (id && action === "delete") {
-    await prisma.recipe.deleteMany({ where: { id } });
+    await prisma.recipe.delete({ where: { id } }).catch(() => null);
     return NextResponse.redirect(new URL("/admin", request.url));
   }
 
