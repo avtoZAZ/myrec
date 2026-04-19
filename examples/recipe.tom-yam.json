@@ -1,0 +1,32 @@
+{
+  "id": "tom-yam-001",
+  "title": "Том Ям с креветками",
+  "slug": "tom-yam-s-krevetkami",
+  "description": "Острый и ароматный тайский суп с креветками, грибами и кокосовым молоком.",
+  "coverImage": "https://images.unsplash.com/photo-1547592166-23ac45744acd",
+  "gallery": [
+    "https://images.unsplash.com/photo-1512058564366-18510be2db19",
+    "https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38"
+  ],
+  "category": "Супы",
+  "tags": ["тайская кухня", "острое", "суп"],
+  "difficulty": "medium",
+  "prepTimeMinutes": 15,
+  "cookTimeMinutes": 25,
+  "totalTimeMinutes": 40,
+  "servings": 4,
+  "published": true,
+  "featured": false,
+  "ingredients": [
+    { "name": "креветки", "amount": 400, "unit": "г" },
+    { "name": "шампиньоны", "amount": 200, "unit": "г" },
+    { "name": "кокосовое молоко", "amount": 400, "unit": "мл" }
+  ],
+  "steps": [
+    { "title": "Подготовка ингредиентов", "description": "Очистите креветки, нарежьте грибы и подготовьте все продукты." },
+    { "title": "Приготовление бульона", "description": "Доведите бульон до кипения, добавьте специи и грибы." },
+    { "title": "Финальный этап", "description": "Добавьте креветки и кокосовое молоко, варите до готовности." }
+  ],
+  "notes": ["Можно добавить больше перца чили для остроты.", "Подавайте с лаймом и кинзой."],
+  "nutrition": { "calories": 320, "protein": 24, "fat": 18, "carbs": 14 }
+}

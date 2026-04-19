@@ -1,0 +1,65 @@
+import { Recipe } from "./types";
+
+export const sampleRecipes: Recipe[] = [
+  {
+    id: "tom-yam-001",
+    title: "Том Ям с креветками",
+    slug: "tom-yam-s-krevetkami",
+    description: "Острый и ароматный тайский суп с креветками, грибами и кокосовым молоком.",
+    coverImage: "https://images.unsplash.com/photo-1547592166-23ac45744acd",
+    gallery: [
+      "https://images.unsplash.com/photo-1512058564366-18510be2db19",
+      "https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38"
+    ],
+    category: "Супы",
+    tags: ["тайская кухня", "острое", "суп"],
+    difficulty: "medium",
+    prepTimeMinutes: 15,
+    cookTimeMinutes: 25,
+    totalTimeMinutes: 40,
+    servings: 4,
+    published: true,
+    featured: true,
+    ingredients: [
+      { name: "креветки", amount: 400, unit: "г" },
+      { name: "шампиньоны", amount: 200, unit: "г" },
+      { name: "кокосовое молоко", amount: 400, unit: "мл" }
+    ],
+    steps: [
+      { title: "Подготовка", description: "Очистите креветки, нарежьте грибы, подготовьте лайм и зелень." },
+      { title: "Бульон", description: "Доведите бульон до кипения, добавьте пасту том ям и грибы." },
+      { title: "Финал", description: "Добавьте креветки и кокосовое молоко, готовьте 4-5 минут." }
+    ],
+    notes: ["Подавайте с кинзой и лаймом.", "Для мягкой версии уменьшите чили."],
+    nutrition: { calories: 320, protein: 24, fat: 18, carbs: 14 }
+  },
+  {
+    id: "pasta-alfredo-002",
+    title: "Паста Альфредо",
+    slug: "pasta-alfredo",
+    description: "Кремовая паста в итальянском стиле для уютного ужина.",
+    coverImage: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9",
+    gallery: ["https://images.unsplash.com/photo-1551183053-bf91a1d81141"],
+    category: "Паста",
+    tags: ["итальянская кухня", "быстро", "ужин"],
+    difficulty: "easy",
+    prepTimeMinutes: 10,
+    cookTimeMinutes: 15,
+    totalTimeMinutes: 25,
+    servings: 2,
+    published: true,
+    featured: false,
+    ingredients: [
+      { name: "феттучини", amount: 250, unit: "г" },
+      { name: "сливки 20%", amount: 220, unit: "мл" },
+      { name: "пармезан", amount: 80, unit: "г" }
+    ],
+    steps: [
+      { title: "Паста", description: "Отварите пасту до al dente." },
+      { title: "Соус", description: "Прогрейте сливки, добавьте пармезан и черный перец." },
+      { title: "Смешивание", description: "Добавьте пасту в соус и подавайте немедленно." }
+    ],
+    notes: ["Сохраните немного воды от пасты для текстуры."],
+    nutrition: { calories: 540, protein: 18, fat: 28, carbs: 52 }
+  }
+];
