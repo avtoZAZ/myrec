@@ -5,6 +5,10 @@ function asArray<T>(value: unknown): T[] {
   return Array.isArray(value) ? (value as T[]) : [];
 }
 
+function asObject<T extends object>(value: unknown): T | undefined {
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as T) : undefined;
+}
+
 function toRecipe(recipe: any): Recipe {
   return {
     id: recipe.id,
@@ -25,7 +29,7 @@ function toRecipe(recipe: any): Recipe {
     ingredients: asArray<Recipe["ingredients"][number]>(recipe.ingredients),
     steps: asArray<Recipe["steps"][number]>(recipe.steps),
     notes: asArray<string>(recipe.notes),
-    nutrition: recipe.nutrition && typeof recipe.nutrition === "object" ? (recipe.nutrition as Recipe["nutrition"]) : undefined
+    nutrition: asObject<NonNullable<Recipe["nutrition"]>>(recipe.nutrition)
   };
 }
 

@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
+import { recipeDefaults } from "@/lib/recipe-defaults";
+import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
-
-const defaults = { gallery: [], tags: [], prepTimeMinutes: 0, cookTimeMinutes: 0, servings: 1, featured: false, notes: [] };
 
 export async function POST(request: Request) {
   const formData = await request.formData();
@@ -10,6 +10,7 @@ export async function POST(request: Request) {
 
   try {
     const payload = {
+      ...recipeDefaults,
       id,
       title: String(formData.get("title") || ""),
       slug: String(formData.get("slug") || ""),
@@ -20,8 +21,7 @@ export async function POST(request: Request) {
       totalTimeMinutes: Number(formData.get("totalTimeMinutes") || 0),
       ingredients: JSON.parse(String(formData.get("ingredients") || "[]")),
       steps: JSON.parse(String(formData.get("steps") || "[]")),
-      published: formData.get("published") === "1",
-      ...defaults
+      published: formData.get("published") === "1"
     };
 
     await prisma.recipe.upsert({
@@ -42,7 +42,12 @@ export async function GET(request: Request) {
   const action = searchParams.get("action");
 
   if (id && action === "delete") {
-    await prisma.recipe.delete({ where: { id } }).catch(() => null);
+    try {
+      await prisma.recipe.delete({ where: { id } });
+    } catch (error) {
+      // Deleting an already-missing recipe should remain a no-op, like the previous file-based behavior.
+      if (!(error instanceof Prisma.PrismaClientKnownRequestError) || error.code !== "P2025") throw error;
+    }
     return NextResponse.redirect(new URL("/admin", request.url));
   }
 

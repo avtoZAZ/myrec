@@ -1,18 +1,14 @@
 import bcrypt from "bcryptjs";
+import { recipeDefaults } from "./recipe-defaults";
 import { prisma } from "./prisma";
 
+const DUMMY_PASSWORD_HASH = "$2a$10$jyi4LgnoHI3ZHVvYCzHYH.25.fVBIVX3PwmyyInJN8vXPuE51LAYm";
+
 const defaults = {
-  gallery: [],
-  tags: [],
-  prepTimeMinutes: 0,
-  cookTimeMinutes: 0,
-  totalTimeMinutes: 0,
-  servings: 1,
+  ...recipeDefaults,
   published: false,
-  featured: false,
   ingredients: [],
   steps: [],
-  notes: [],
   nutrition: null
 };
 
@@ -24,7 +20,7 @@ function toRecipeData(recipe: any) {
     description: String(recipe.description ?? ""),
     coverImage: String(recipe.coverImage ?? ""),
     category: String(recipe.category ?? ""),
-    difficulty: String(recipe.difficulty ?? "medium"),
+    difficulty: String(recipe.difficulty ?? defaults.difficulty),
     prepTimeMinutes: Number(recipe.prepTimeMinutes ?? defaults.prepTimeMinutes),
     cookTimeMinutes: Number(recipe.cookTimeMinutes ?? defaults.cookTimeMinutes),
     totalTimeMinutes: Number(recipe.totalTimeMinutes ?? defaults.totalTimeMinutes),
@@ -46,6 +42,12 @@ export async function readRecipes() {
 
 export async function writeRecipes(recipes: any[]) {
   const normalizedRecipes = recipes.map(toRecipeData);
+  if (normalizedRecipes.length === 0) {
+    await prisma.recipe.deleteMany({});
+    return;
+  }
+
+  // Keeps previous file-store semantics: passed array is treated as the full source of truth.
   await prisma.$transaction([
     prisma.recipe.deleteMany({ where: { id: { notIn: normalizedRecipes.map((r) => r.id) } } }),
     ...normalizedRecipes.map((recipe) =>
@@ -60,6 +62,6 @@ export async function writeRecipes(recipes: any[]) {
 
 export async function validateAdmin(username: string, password: string) {
   const user = await prisma.user.findUnique({ where: { username } });
-  if (!user) return false;
-  return bcrypt.compare(password, user.passwordHash);
+  const isValid = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_PASSWORD_HASH);
+  return Boolean(user) && isValid;
 }
