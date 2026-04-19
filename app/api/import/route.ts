@@ -1,6 +1,8 @@
 import { validateImportPayload } from "@/lib/validators";
-import { readRecipes, writeRecipes } from "@/lib/store";
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+
+const defaults = { gallery: [], tags: [], prepTimeMinutes: 0, cookTimeMinutes: 0, totalTimeMinutes: 0, servings: 1, featured: false, notes: [] };
 
 export async function POST(request: Request) {
   const formData = await request.formData();
@@ -22,15 +24,17 @@ export async function POST(request: Request) {
 
   const payload = validation.data as any;
   const items = Array.isArray(payload.recipes) ? payload.recipes : [payload];
-  const recipes = await readRecipes();
 
   for (const item of items) {
     const published = forcePublish || payload.publish || item.publish || item.published || false;
-    const idx = recipes.findIndex((r) => r.id === item.id);
-    if (idx >= 0) recipes[idx] = { ...recipes[idx], ...item, published };
-    else recipes.unshift({ ...item, published });
+    const { publish: _publish, ...recipe } = item;
+    const data = { ...defaults, ...recipe, published };
+    await prisma.recipe.upsert({
+      where: { id: String(item.id) },
+      update: data,
+      create: data
+    });
   }
 
-  await writeRecipes(recipes);
   return NextResponse.redirect(new URL("/admin", request.url));
 }

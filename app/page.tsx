@@ -3,6 +3,8 @@ import { MotionSection } from "@/components/motion-section";
 import { RecipeCard } from "@/components/recipe-card";
 import { getPublishedRecipes } from "@/lib/recipes";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const recipes = await getPublishedRecipes();
   const featured = recipes.filter((r) => r.featured).slice(0, 3);

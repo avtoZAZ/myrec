@@ -1,4 +1,4 @@
-import { readRecipes, writeRecipes } from "@/lib/store";
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 const defaults = { gallery: [], tags: [], prepTimeMinutes: 0, cookTimeMinutes: 0, servings: 1, featured: false, notes: [] };
@@ -24,11 +24,11 @@ export async function POST(request: Request) {
       ...defaults
     };
 
-    const recipes = await readRecipes();
-    const idx = recipes.findIndex((r) => r.id === id);
-    if (mode === "update" && idx >= 0) recipes[idx] = { ...recipes[idx], ...payload };
-    else recipes.unshift(payload);
-    await writeRecipes(recipes);
+    await prisma.recipe.upsert({
+      where: { id: payload.id },
+      update: payload,
+      create: payload
+    });
   } catch (e) {
     return NextResponse.json({ ok: false, error: `Ошибка сохранения: ${(e as Error).message}` }, { status: 400 });
   }
@@ -41,12 +41,11 @@ export async function GET(request: Request) {
   const id = searchParams.get("id");
   const action = searchParams.get("action");
 
-  const recipes = await readRecipes();
-
   if (id && action === "delete") {
-    await writeRecipes(recipes.filter((r) => r.id !== id));
+    await prisma.recipe.deleteMany({ where: { id } });
     return NextResponse.redirect(new URL("/admin", request.url));
   }
 
+  const recipes = await prisma.recipe.findMany({ orderBy: { createdAt: "desc" } });
   return NextResponse.json(recipes);
 }
